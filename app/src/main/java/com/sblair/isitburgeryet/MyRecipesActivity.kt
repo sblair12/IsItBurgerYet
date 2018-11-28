@@ -1,49 +1,66 @@
 package com.sblair.isitburgeryet
 
-import android.app.Activity
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.os.AsyncTask
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.util.DiffUtil
+import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import com.sblair.isitburgeryet.model.Recipe
-import com.sblair.isitburgeryet.viewmodel.RecipeLiveData.recipeList
-import kotlinx.android.synthetic.main.recipe_list.view.*
-import java.util.*
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.os.AsyncTask
-import android.support.design.widget.Snackbar
-import android.support.v7.widget.LinearLayoutManager
-import android.util.Log
 import com.sblair.isitburgeryet.model.RecipeSearch
+import com.sblair.isitburgeryet.viewmodel.RecipeViewModel
 import kotlinx.android.synthetic.main.activity_recipe_list.*
+import kotlinx.android.synthetic.main.recipe_list.view.*
+import java.util.ArrayList
 
+class MyRecipesActivity : AppCompatActivity() {
 
-class RecipeListActivity : AppCompatActivity() {
-
-    lateinit var recipeResultList: ArrayList<RecipeSearch>
+    private var recipeList = ArrayList<Recipe>()
     private var adapter = RecipeSearchAdapter()
+    private lateinit var viewModel: RecipeViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_recipe_list)
-        recipeResultList = intent.getSerializableExtra("RESULT_ARRAY") as ArrayList<RecipeSearch>
+        setContentView(R.layout.activity_my_recipes)
 
         recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = adapter
-    }
+        viewModel = ViewModelProviders.of(this).get(RecipeViewModel::class.java)
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == 1) {
-            if (resultCode == Activity.RESULT_OK) {
-                Snackbar.make(parentView,"Added to My Recipes", Snackbar.LENGTH_LONG).show()
-            }
+        val observer = Observer<ArrayList<Recipe>> {
+            recyclerView.adapter = adapter
+            val result = DiffUtil.calculateDiff(object : DiffUtil.Callback() {
+                override fun getOldListSize(): Int {
+                    return recipeList.size
+                }
+
+                override fun getNewListSize(): Int {
+                    return it!!.size
+                }
+
+                override fun areItemsTheSame(p0: Int, p1: Int): Boolean {
+                    return recipeList[p0].id == it!![p1].id
+                }
+
+                override fun areContentsTheSame(p0: Int, p1: Int): Boolean {
+                    return recipeList[p0] == it!![p1]
+                }
+            })
+            result.dispatchUpdatesTo(adapter) // update the adapter
+            recipeList = it!!
         }
+
+        viewModel.getRecipes().observe(this, observer)
     }
 
     // inner here gives this class to variables in the MainActivity class
@@ -55,18 +72,13 @@ class RecipeListActivity : AppCompatActivity() {
         }
 
         override fun onBindViewHolder(p0: RecipeSearchViewHolder, p1: Int) {
-            val recipe = recipeResultList[p1]
+            val recipe = recipeList[p1]
             p0.titleTextView.text = recipe.title
             ImageUrlTask(p0.thumbnailView).execute(recipe.thumbnail)
-            p0.itemView.setOnClickListener {
-                val intent = Intent(this@RecipeListActivity, RecipeViewActivity::class.java)
-                intent.putExtra("RECIPE_SEARCH", recipe)
-                startActivityForResult(intent, 1)
-            }
         }
 
         override fun getItemCount(): Int {
-            return recipeResultList.size
+            return recipeList.size
         }
 
         inner class RecipeSearchViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {

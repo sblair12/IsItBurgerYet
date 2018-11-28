@@ -11,7 +11,7 @@ class RecipeDatabaseHelper(context: Context): SQLiteOpenHelper(context, DbSettin
         val createTableQuery = "CREATE TABLE " + DbSettings.DBEntry.TABLE + " ( " +
                 DbSettings.DBEntry.ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 DbSettings.DBEntry.COL_TITLE + " TEXT NOT NULL, " +
-                DbSettings.DBEntry.COL_INGREDIENTS + " TEXT NOT NULL, "
+                DbSettings.DBEntry.COL_INGREDIENTS + " TEXT NOT NULL, " +
                 DbSettings.DBEntry.COL_HREF + " TEXT NOT NULL, " +
                 DbSettings.DBEntry.COL_IMAGE + " TEXT NOT NULL); "
 

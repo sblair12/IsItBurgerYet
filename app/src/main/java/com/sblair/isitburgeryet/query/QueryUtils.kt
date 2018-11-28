@@ -21,7 +21,7 @@ class QueryUtils {
 
     companion object {
         private val LogTag = this::class.java.simpleName
-        private const val BaseUrl = "https://api.edamam.com/search?q=*INGRED*&app_id=35b2866e&app_key=a0573d3e9e5eaa3bb79b75ecf26beb45&from=0&to=3"
+        private const val BaseUrl = "https://api.edamam.com/search?q=*INGRED*&app_id=35b2866e&app_key=a0573d3e9e5eaa3bb79b75ecf26beb45&from=0&to=10"
 
         fun fetchRecipeData(requestUrl: String): ArrayList<RecipeSearch>? {
             val url: URL? = createUrl(this.BaseUrl.replace("*INGRED*", requestUrl))
