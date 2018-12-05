@@ -29,6 +29,7 @@ class RecipeViewModel(application: Application): AndroidViewModel(application) {
         val newRecipes: ArrayList<Recipe> = ArrayList()
         val database: SQLiteDatabase = this._recipeDBHelper.readableDatabase
 
+        val args: Array<String> = arrayOf(category)
         // Check Shared Preferences
         val cursor: Cursor
 
@@ -42,7 +43,7 @@ class RecipeViewModel(application: Application): AndroidViewModel(application) {
                 DbSettings.DBEntry.COL_IMAGE,
                 DbSettings.DBEntry.COL_CATEGORY
             ),
-            "category='$category'", null, null, null, null
+            "category=?", args, null, null, null
         )
 
         while (cursor.moveToNext()) {
