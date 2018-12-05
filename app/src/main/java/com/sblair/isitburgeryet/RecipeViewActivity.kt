@@ -47,7 +47,7 @@ class RecipeViewActivity : AppCompatActivity(), AdapterView.OnItemSelectedListen
         chooseCategory.onItemSelectedListener = this
 
         addToList.setOnClickListener {
-            viewModel.addRecipe(-1, recipe.title, recipe.ingredients.joinToString(","), recipe.href, recipe.thumbnail, recipe.category)
+            viewModel.addRecipe(-1, recipe.title, recipe.ingredients.joinToString("~"), recipe.href, recipe.thumbnail, recipe.category)
             setResult(Activity.RESULT_OK)
             finish()
         }

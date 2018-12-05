@@ -18,6 +18,7 @@ import com.sblair.isitburgeryet.viewmodel.RecipeLiveData.recipeList
 class RecipeViewModel(application: Application): AndroidViewModel(application) {
     private var _recipeDBHelper: RecipeDatabaseHelper = RecipeDatabaseHelper(application)
     private var _recipeList: MutableLiveData<ArrayList<Recipe>> = RecipeLiveData.recipeList // Here's where the magic happens
+    private var _shoppingList: MutableLiveData<ArrayList<Recipe>> = RecipeLiveData.recipeList
 
     fun getRecipes(category: String): MutableLiveData<ArrayList<Recipe>> {
         loadRecipes(category)
@@ -248,4 +249,8 @@ class RecipeViewModel(application: Application): AndroidViewModel(application) {
 
 object RecipeLiveData {
     var recipeList: MutableLiveData<ArrayList<Recipe>> = MutableLiveData()
+}
+
+object ShoppingLiveData {
+    var shoppingList: MutableLiveData<ArrayList<Recipe>> = MutableLiveData()
 }

@@ -36,15 +36,14 @@ class MyRecipeViewActivity : AppCompatActivity(), AdapterView.OnItemSelectedList
 
         viewModel = ViewModelProviders.of(this).get(RecipeViewModel::class.java)
         recipe = intent.getSerializableExtra("RECIPE_SEARCH") as Recipe
-        ingredients = ArrayList(recipe.ingredients.split(","))
+        ingredients = ArrayList(recipe.ingredients.split("~"))
 
         recipeTitle.text = recipe.title
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
 
-        categoryList.add("No category")
-        categoryList.add("New category")
-        categoryList.addAll(viewModel.getCategories())
+        categoryList.add("New shopping list")
+        //categoryList.add(viewModel.getShoppingLists())
 
         categoryAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, categoryList)
         chooseCategory.adapter = categoryAdapter
