@@ -19,12 +19,12 @@ class RecipeViewModel(application: Application): AndroidViewModel(application) {
     private var _recipeDBHelper: RecipeDatabaseHelper = RecipeDatabaseHelper(application)
     private var _recipeList: MutableLiveData<ArrayList<Recipe>> = RecipeLiveData.recipeList // Here's where the magic happens
 
-    fun getRecipes(): MutableLiveData<ArrayList<Recipe>> {
-        loadRecipes()
+    fun getRecipes(category: String): MutableLiveData<ArrayList<Recipe>> {
+        loadRecipes(category)
         return _recipeList
     }
 
-    private fun loadRecipes() {
+    private fun loadRecipes(category: String) {
         val newRecipes: ArrayList<Recipe> = ArrayList()
         val database: SQLiteDatabase = this._recipeDBHelper.readableDatabase
 
@@ -41,7 +41,7 @@ class RecipeViewModel(application: Application): AndroidViewModel(application) {
                 DbSettings.DBEntry.COL_IMAGE,
                 DbSettings.DBEntry.COL_CATEGORY
             ),
-            null, null, null, null, null
+            "category='$category'", null, null, null, null
         )
 
         while (cursor.moveToNext()) {

@@ -123,7 +123,7 @@ class QueryUtils {
                     }
                     val thumbnail = recipe.getString("image")
 
-                    val recipeObject = RecipeSearch(title, ingredients, href, thumbnail, "")
+                    val recipeObject = RecipeSearch(title, ingredients, href, thumbnail, "No category")
                     recipeResultList.add(recipeObject)
                 }
             }
@@ -139,6 +139,4 @@ class QueryUtils {
             return dateFormat.parse(dateString, ParsePosition(0))
         }
     }
-
-
 }

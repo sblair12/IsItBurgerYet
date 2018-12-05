@@ -13,13 +13,18 @@ class DbSettings {
 
     class DBEntry: BaseColumns {
         companion object {
-            const val TABLE = "recipe"
             const val ID = BaseColumns._ID
+
+            const val TABLE = "recipe"
             const val COL_TITLE = "title"
             const val COL_INGREDIENTS = "ingredients"
             const val COL_HREF = "href"
             const val COL_IMAGE = "image"
             const val COL_CATEGORY = "category"
+
+            const val TABLE_SHOPPING = "shopping"
+            const val COL_NAME = "name"
+            const val COL_RECIPE_ID = "recipe"
         }
     }
 }

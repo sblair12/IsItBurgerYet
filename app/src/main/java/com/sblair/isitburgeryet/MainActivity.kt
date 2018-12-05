@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity() {
             setDisplayHomeAsUpEnabled(true)
             setHomeAsUpIndicator(R.drawable.ic_menu)
         }
-
+        nav_view.menu.getItem(0).setChecked(true)
         nav_view.setNavigationItemSelectedListener { menuItem ->
             menuItem.isChecked = true
             drawer_layout.closeDrawers()
@@ -55,6 +55,11 @@ class MainActivity : AppCompatActivity() {
                 }
             }.start()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        nav_view.menu.getItem(0).setChecked(true)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

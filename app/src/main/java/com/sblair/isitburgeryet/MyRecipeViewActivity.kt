@@ -14,15 +14,16 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.TextView
+import com.sblair.isitburgeryet.model.Recipe
 import com.sblair.isitburgeryet.model.RecipeSearch
 import com.sblair.isitburgeryet.viewmodel.RecipeViewModel
 import kotlinx.android.synthetic.main.activity_view.*
 import kotlinx.android.synthetic.main.recipe_list.view.*
 import java.util.ArrayList
 
-class RecipeViewActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
+class MyRecipeViewActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
-    private lateinit var recipe: RecipeSearch
+    private lateinit var recipe: Recipe
     private lateinit var ingredients: ArrayList<String>
     private var adapter = IngredientsAdapter()
     private lateinit var categoryAdapter: ArrayAdapter<String>
@@ -31,65 +32,59 @@ class RecipeViewActivity : AppCompatActivity(), AdapterView.OnItemSelectedListen
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_view)
+        setContentView(R.layout.activity_my_recipe_view)
+
         viewModel = ViewModelProviders.of(this).get(RecipeViewModel::class.java)
-        recipe = intent.getSerializableExtra("RECIPE_SEARCH") as RecipeSearch
-        ingredients = recipe.ingredients
+        recipe = intent.getSerializableExtra("RECIPE_SEARCH") as Recipe
+        ingredients = ArrayList(recipe.ingredients.split(","))
 
         recipeTitle.text = recipe.title
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
 
-        getCategories()
+        categoryList.add("No category")
+        categoryList.add("New category")
+        categoryList.addAll(viewModel.getCategories())
 
         categoryAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, categoryList)
         chooseCategory.adapter = categoryAdapter
         chooseCategory.onItemSelectedListener = this
 
         addToList.setOnClickListener {
-            viewModel.addRecipe(-1, recipe.title, recipe.ingredients.joinToString(","), recipe.href, recipe.thumbnail, recipe.category)
+            //viewModel.addToShoppingList()
             setResult(Activity.RESULT_OK)
             finish()
         }
     }
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        if (parent?.getItemAtPosition(position) == "New category") {
+        when(parent?.getItemAtPosition(position)) {
+            "New category" -> {
                 val categoryEditText = EditText(this)
                 val dialog = AlertDialog.Builder(this)
                     .setTitle("New Category")
                     .setMessage("Create a category for your recipe")
                     .setView(categoryEditText)
                     .setPositiveButton("Add") { _, _ ->
+                        if (recipe.category != "") {
+                            categoryList.remove(recipe.category)
+                        }
                         val category = categoryEditText.text.toString()
                         recipe.category = category
-                        if (!categoryList.contains(category)) {
-                            categoryList.add(category)
-                        }
+                        categoryList.add(category)
                         parent.setSelection(categoryAdapter.getPosition(category))
                     }
                     .setNegativeButton("Cancel", null)
                     .create()
                 dialog.show()
             }
-        else {
-            recipe.category = parent?.getItemAtPosition(position) as String
+            "No category" -> recipe.category = ""
+            else -> recipe.category = parent?.getItemAtPosition(position) as String
         }
     }
 
     override fun onNothingSelected(parent: AdapterView<*>?) {
         //do nothing
-    }
-
-    private fun getCategories() {
-        categoryList = ArrayList()
-        categoryList.add("No category")
-        categoryList.add("New category")
-        for (item in viewModel.getCategories()) {
-            if (item != "No category") {
-                categoryList.add(item)
-            }
-        }
     }
 
     inner class IngredientsAdapter: RecyclerView.Adapter<IngredientsAdapter.RecipeIngredientsViewHolder>() {
