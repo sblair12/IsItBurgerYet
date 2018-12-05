@@ -13,7 +13,8 @@ class RecipeDatabaseHelper(context: Context): SQLiteOpenHelper(context, DbSettin
                 DbSettings.DBEntry.COL_TITLE + " TEXT NOT NULL, " +
                 DbSettings.DBEntry.COL_INGREDIENTS + " TEXT NOT NULL, " +
                 DbSettings.DBEntry.COL_HREF + " TEXT NOT NULL, " +
-                DbSettings.DBEntry.COL_IMAGE + " TEXT NOT NULL); "
+                DbSettings.DBEntry.COL_IMAGE + " TEXT NOT NULL, " +
+                DbSettings.DBEntry.COL_CATEGORY + " TEXT NOT NULL); "
 
         db?.execSQL(createTableQuery)
     }

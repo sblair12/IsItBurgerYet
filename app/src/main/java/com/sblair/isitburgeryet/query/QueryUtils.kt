@@ -123,7 +123,7 @@ class QueryUtils {
                     }
                     val thumbnail = recipe.getString("image")
 
-                    val recipeObject = RecipeSearch(title, ingredients, href, thumbnail)
+                    val recipeObject = RecipeSearch(title, ingredients, href, thumbnail, "")
                     recipeResultList.add(recipeObject)
                 }
             }

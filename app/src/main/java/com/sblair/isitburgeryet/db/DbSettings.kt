@@ -19,6 +19,7 @@ class DbSettings {
             const val COL_INGREDIENTS = "ingredients"
             const val COL_HREF = "href"
             const val COL_IMAGE = "image"
+            const val COL_CATEGORY = "category"
         }
     }
 }

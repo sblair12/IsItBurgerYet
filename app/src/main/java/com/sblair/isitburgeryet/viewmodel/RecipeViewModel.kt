@@ -38,7 +38,8 @@ class RecipeViewModel(application: Application): AndroidViewModel(application) {
                 DbSettings.DBEntry.COL_TITLE,
                 DbSettings.DBEntry.COL_INGREDIENTS,
                 DbSettings.DBEntry.COL_HREF,
-                DbSettings.DBEntry.COL_IMAGE
+                DbSettings.DBEntry.COL_IMAGE,
+                DbSettings.DBEntry.COL_CATEGORY
             ),
             null, null, null, null, null
         )
@@ -49,13 +50,15 @@ class RecipeViewModel(application: Application): AndroidViewModel(application) {
             val cursorIngredients = cursor.getColumnIndex(DbSettings.DBEntry.COL_INGREDIENTS)
             val cursorHref = cursor.getColumnIndex(DbSettings.DBEntry.COL_HREF)
             val cursorImage = cursor.getColumnIndex(DbSettings.DBEntry.COL_IMAGE)
+            val cursorCategory = cursor.getColumnIndex(DbSettings.DBEntry.COL_CATEGORY)
             newRecipes.add(
                 Recipe(
                     cursor.getLong(cursorId),
                     cursor.getString(cursorTitle),
                     cursor.getString(cursorIngredients),
                     cursor.getString(cursorHref),
-                    cursor.getString(cursorImage)
+                    cursor.getString(cursorImage),
+                    cursor.getString(cursorCategory)
                 )
             )
         }
@@ -65,13 +68,14 @@ class RecipeViewModel(application: Application): AndroidViewModel(application) {
         this._recipeList.value = newRecipes
     }
 
-    fun addRecipe(oldId: Long, title: String, ingredients: String, href: String, image: String) {
+    fun addRecipe(oldId: Long, title: String, ingredients: String, href: String, image: String, category: String) {
         val database: SQLiteDatabase = _recipeDBHelper.writableDatabase
         val values = ContentValues()
         values.put(DbSettings.DBEntry.COL_TITLE, title)
         values.put(DbSettings.DBEntry.COL_INGREDIENTS, ingredients)
         values.put(DbSettings.DBEntry.COL_HREF, href)
         values.put(DbSettings.DBEntry.COL_IMAGE, image)
+        values.put(DbSettings.DBEntry.COL_CATEGORY, category)
 
         var newId: Long
         var recipeList: ArrayList<Recipe>? = this._recipeList.value
@@ -92,7 +96,8 @@ class RecipeViewModel(application: Application): AndroidViewModel(application) {
                     title,
                     ingredients,
                     href,
-                    image
+                    image,
+                    category
                 )
             )
         }
@@ -117,7 +122,8 @@ class RecipeViewModel(application: Application): AndroidViewModel(application) {
                         title,
                         ingredients,
                         href,
-                        image
+                        image,
+                        category
                     )
         }
         database.close()
@@ -187,7 +193,8 @@ class RecipeViewModel(application: Application): AndroidViewModel(application) {
                 DbSettings.DBEntry.COL_TITLE,
                 DbSettings.DBEntry.COL_INGREDIENTS,
                 DbSettings.DBEntry.COL_HREF,
-                DbSettings.DBEntry.COL_IMAGE
+                DbSettings.DBEntry.COL_IMAGE,
+                DbSettings.DBEntry.COL_CATEGORY
             ),
             "_id=$id", null, null, null, null
         )
@@ -198,12 +205,14 @@ class RecipeViewModel(application: Application): AndroidViewModel(application) {
         val cursorIngredients = cursor.getColumnIndex(DbSettings.DBEntry.COL_INGREDIENTS)
         val cursorHref = cursor.getColumnIndex(DbSettings.DBEntry.COL_HREF)
         val cursorImage = cursor.getColumnIndex(DbSettings.DBEntry.COL_IMAGE)
+        val cursorCategory = cursor.getColumnIndex(DbSettings.DBEntry.COL_CATEGORY)
         result = Recipe(
             cursor.getLong(cursorId),
             cursor.getString(cursorTitle),
             cursor.getString(cursorIngredients),
             cursor.getString(cursorHref),
-            cursor.getString(cursorImage)
+            cursor.getString(cursorImage),
+            cursor.getString(cursorCategory)
         )
 
         cursor.close()
@@ -211,32 +220,30 @@ class RecipeViewModel(application: Application): AndroidViewModel(application) {
         return result
     }
 
-/*    fun getCategories() : ArrayList<String> {
+    fun getCategories() : ArrayList<String> {
         val categories: ArrayList<String> = ArrayList()
-        val database: SQLiteDatabase = this._todoDBHelper.readableDatabase
+        val database: SQLiteDatabase = this._recipeDBHelper.readableDatabase
 
         val cursor: Cursor
 
         cursor = database.query(
+            true,
             DbSettings.DBEntry.TABLE,
             arrayOf(
                 DbSettings.DBEntry.COL_CATEGORY
             ),
-            null, null, null, null, null
+            null, null, null, null, null, null
         )
 
         while (cursor.moveToNext()) {
             val cursorCategory = cursor.getColumnIndex(DbSettings.DBEntry.COL_CATEGORY)
-            val category = cursor.getString(cursorCategory)
-            if (!categories.contains(category) && category != "") {
-                categories.add(category)
-            }
+            categories.add(cursor.getString(cursorCategory))
         }
 
         cursor.close()
         database.close()
         return categories
-    }*/
+    }
 }
 
 object RecipeLiveData {

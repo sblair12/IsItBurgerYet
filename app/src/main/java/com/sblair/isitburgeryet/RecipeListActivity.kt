@@ -21,6 +21,7 @@ import android.support.design.widget.Snackbar
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import com.sblair.isitburgeryet.model.RecipeSearch
+import com.sblair.isitburgeryet.viewmodel.RecipeViewModel
 import kotlinx.android.synthetic.main.activity_recipe_list.*
 
 
