@@ -94,6 +94,12 @@ class ShoppingListActivity : AppCompatActivity() {
         viewModel.getShoppingList().observe(this, observer)
     }
 
+    fun onCheckboxClicked(view: View) {
+        if (view is CheckBox) {
+            viewModel.changeChecked(view.id.toLong(), if (view.isChecked) 1 else 0)
+        }
+    }
+
     inner class IngredientAdapter: RecyclerView.Adapter<IngredientAdapter.IngredientViewHolder>() {
 
         override fun onCreateViewHolder(p0: ViewGroup, p1: Int): IngredientViewHolder {
@@ -109,6 +115,7 @@ class ShoppingListActivity : AppCompatActivity() {
             for (ingredient in ingredients) {
                 val layout = LayoutInflater.from(this@ShoppingListActivity).inflate(R.layout.ingredient_check, null)
                 layout.checked.isChecked = if (ingredient.checked == 1) true else false
+                layout.checked.id = ingredient.id.toInt()
                 layout.ingredientText.text = ingredient.name
                 p0.ingredientLayout.addView(layout)
             }

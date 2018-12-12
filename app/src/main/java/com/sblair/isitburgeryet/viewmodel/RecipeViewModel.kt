@@ -13,6 +13,7 @@ import com.sblair.isitburgeryet.db.DbSettings
 import com.sblair.isitburgeryet.db.RecipeDatabaseHelper
 import com.sblair.isitburgeryet.model.Ingredient
 import com.sblair.isitburgeryet.viewmodel.RecipeLiveData.recipeList
+import com.sblair.isitburgeryet.viewmodel.ShoppingLiveData.shoppingList
 
 // Implements all necessary functions for an Item entity in the database
 
@@ -202,6 +203,30 @@ class RecipeViewModel(application: Application): AndroidViewModel(application) {
 
         database.close()
 
+        this._shoppingList.value = shoppingList
+    }
+
+    fun changeChecked(id: Long, checked: Int) {
+        val database: SQLiteDatabase = _recipeDBHelper.writableDatabase
+
+        val values = ContentValues()
+        values.put(DbSettings.DBEntry.COL_CHECKED, checked)
+
+        database.updateWithOnConflict(
+            DbSettings.DBEntry.TABLE_SHOPPING,
+            values,
+            "_id=?",
+            arrayOf(id.toString()),
+            SQLiteDatabase.CONFLICT_REPLACE
+        )
+
+        database.close()
+
+        var shoppingList: ArrayList<Ingredient>? = this._shoppingList.value
+        val oldIngredient = shoppingList!!.find {
+            it.id == id
+        }
+        shoppingList[shoppingList.indexOf(oldIngredient)].checked = checked
         this._shoppingList.value = shoppingList
     }
 
