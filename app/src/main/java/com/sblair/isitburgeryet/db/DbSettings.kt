@@ -24,7 +24,8 @@ class DbSettings {
 
             const val TABLE_SHOPPING = "shopping"
             const val COL_NAME = "name"
-            const val COL_RECIPE_ID = "recipe"
+            const val COL_RECIPE_NAME = "recipe"
+            const val COL_CHECKED = "checked"
         }
     }
 }

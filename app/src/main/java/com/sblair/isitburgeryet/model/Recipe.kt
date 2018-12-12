@@ -6,4 +6,4 @@ class Recipe(var id: Long, var title: String, var ingredients: String, var href:
 
 class RecipeSearch(var title: String, var ingredients: ArrayList<String>, var href: String, var thumbnail: String, var category: String) : Serializable
 
-class Shopping()
+class Ingredient(var id: Long, var name: String, var recipeName: String, var checked: Int)

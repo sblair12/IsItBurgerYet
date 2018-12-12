@@ -21,14 +21,12 @@ import kotlinx.android.synthetic.main.activity_view.*
 import kotlinx.android.synthetic.main.recipe_list.view.*
 import java.util.ArrayList
 
-class MyRecipeViewActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
+class MyRecipeViewActivity : AppCompatActivity() {
 
     private lateinit var recipe: Recipe
     private lateinit var ingredients: ArrayList<String>
     private var adapter = IngredientsAdapter()
-    private lateinit var categoryAdapter: ArrayAdapter<String>
     private lateinit var viewModel: RecipeViewModel
-    private var categoryList = ArrayList<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,48 +40,11 @@ class MyRecipeViewActivity : AppCompatActivity(), AdapterView.OnItemSelectedList
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
 
-        categoryList.add("New shopping list")
-        //categoryList.add(viewModel.getShoppingLists())
-
-        categoryAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, categoryList)
-        chooseCategory.adapter = categoryAdapter
-        chooseCategory.onItemSelectedListener = this
-
         addToList.setOnClickListener {
-            //viewModel.addToShoppingList()
+            viewModel.addToShoppingList(recipe)
             setResult(Activity.RESULT_OK)
             finish()
         }
-    }
-
-    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        when(parent?.getItemAtPosition(position)) {
-            "New category" -> {
-                val categoryEditText = EditText(this)
-                val dialog = AlertDialog.Builder(this)
-                    .setTitle("New Category")
-                    .setMessage("Create a category for your recipe")
-                    .setView(categoryEditText)
-                    .setPositiveButton("Add") { _, _ ->
-                        if (recipe.category != "") {
-                            categoryList.remove(recipe.category)
-                        }
-                        val category = categoryEditText.text.toString()
-                        recipe.category = category
-                        categoryList.add(category)
-                        parent.setSelection(categoryAdapter.getPosition(category))
-                    }
-                    .setNegativeButton("Cancel", null)
-                    .create()
-                dialog.show()
-            }
-            "No category" -> recipe.category = ""
-            else -> recipe.category = parent?.getItemAtPosition(position) as String
-        }
-    }
-
-    override fun onNothingSelected(parent: AdapterView<*>?) {
-        //do nothing
     }
 
     inner class IngredientsAdapter: RecyclerView.Adapter<IngredientsAdapter.RecipeIngredientsViewHolder>() {

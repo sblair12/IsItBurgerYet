@@ -11,6 +11,7 @@ import com.sblair.isitburgeryet.R.id.*
 import com.sblair.isitburgeryet.model.Recipe
 import com.sblair.isitburgeryet.db.DbSettings
 import com.sblair.isitburgeryet.db.RecipeDatabaseHelper
+import com.sblair.isitburgeryet.model.Ingredient
 import com.sblair.isitburgeryet.viewmodel.RecipeLiveData.recipeList
 
 // Implements all necessary functions for an Item entity in the database
@@ -18,11 +19,16 @@ import com.sblair.isitburgeryet.viewmodel.RecipeLiveData.recipeList
 class RecipeViewModel(application: Application): AndroidViewModel(application) {
     private var _recipeDBHelper: RecipeDatabaseHelper = RecipeDatabaseHelper(application)
     private var _recipeList: MutableLiveData<ArrayList<Recipe>> = RecipeLiveData.recipeList // Here's where the magic happens
-    private var _shoppingList: MutableLiveData<ArrayList<Recipe>> = RecipeLiveData.recipeList
+    private var _shoppingList: MutableLiveData<ArrayList<Ingredient>> = ShoppingLiveData.shoppingList
 
     fun getRecipes(category: String): MutableLiveData<ArrayList<Recipe>> {
         loadRecipes(category)
         return _recipeList
+    }
+
+    fun getShoppingList() : MutableLiveData<ArrayList<Ingredient>> {
+        loadShoppingList()
+        return _shoppingList
     }
 
     private fun loadRecipes(category: String) {
@@ -68,6 +74,43 @@ class RecipeViewModel(application: Application): AndroidViewModel(application) {
         cursor.close()
         database.close()
         this._recipeList.value = newRecipes
+    }
+
+    private fun loadShoppingList() {
+        val newIngredients: ArrayList<Ingredient> = ArrayList()
+        val database: SQLiteDatabase = this._recipeDBHelper.readableDatabase
+
+        val cursor: Cursor
+
+        cursor = database.query(
+            DbSettings.DBEntry.TABLE_SHOPPING,
+            arrayOf(
+                DbSettings.DBEntry.ID,
+                DbSettings.DBEntry.COL_NAME,
+                DbSettings.DBEntry.COL_RECIPE_NAME,
+                DbSettings.DBEntry.COL_CHECKED
+            ),
+            null, null, null, null, null
+        )
+
+        while (cursor.moveToNext()) {
+            val cursorId = cursor.getColumnIndex(DbSettings.DBEntry.ID)
+            val cursorTitle = cursor.getColumnIndex(DbSettings.DBEntry.COL_NAME)
+            val cursorRecipeName = cursor.getColumnIndex(DbSettings.DBEntry.COL_RECIPE_NAME)
+            val cursorChecked = cursor.getColumnIndex(DbSettings.DBEntry.COL_CHECKED)
+            newIngredients.add(
+                Ingredient(
+                    cursor.getLong(cursorId),
+                    cursor.getString(cursorTitle),
+                    cursor.getString(cursorRecipeName),
+                    cursor.getInt(cursorChecked)
+                )
+            )
+        }
+
+        cursor.close()
+        database.close()
+        this._shoppingList.value = newIngredients
     }
 
     fun addRecipe(oldId: Long, title: String, ingredients: String, href: String, image: String, category: String) {
@@ -131,6 +174,35 @@ class RecipeViewModel(application: Application): AndroidViewModel(application) {
         database.close()
 
         this._recipeList.value = recipeList
+    }
+
+    fun addToShoppingList(recipe: Recipe) {
+        val database: SQLiteDatabase = _recipeDBHelper.writableDatabase
+
+        var shoppingList: ArrayList<Ingredient>? = this._shoppingList.value
+        if (shoppingList == null) {
+            shoppingList = ArrayList()
+        }
+
+        for (ingredient in recipe.ingredients.split("~")) {
+            val values = ContentValues()
+            values.put(DbSettings.DBEntry.COL_RECIPE_NAME, recipe.title)
+            values.put(DbSettings.DBEntry.COL_NAME, ingredient)
+            values.put(DbSettings.DBEntry.COL_CHECKED, 0)
+            val id = database.insertWithOnConflict(
+                DbSettings.DBEntry.TABLE_SHOPPING,
+                null,
+                values,
+                SQLiteDatabase.CONFLICT_IGNORE
+            )
+            shoppingList.add(
+                Ingredient(id, ingredient, recipe.title, 0)
+            )
+        }
+
+        database.close()
+
+        this._shoppingList.value = shoppingList
     }
 
     fun removeRecipe(id: Long) {
@@ -253,5 +325,5 @@ object RecipeLiveData {
 }
 
 object ShoppingLiveData {
-    var shoppingList: MutableLiveData<ArrayList<Recipe>> = MutableLiveData()
+    var shoppingList: MutableLiveData<ArrayList<Ingredient>> = MutableLiveData()
 }

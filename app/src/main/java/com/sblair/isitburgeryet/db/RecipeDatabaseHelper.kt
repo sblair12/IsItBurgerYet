@@ -8,18 +8,20 @@ import android.database.sqlite.SQLiteOpenHelper
 
 class RecipeDatabaseHelper(context: Context): SQLiteOpenHelper(context, DbSettings.DB_NAME, null, DbSettings.DB_VERSION) {
     override fun onCreate(db: SQLiteDatabase?) {
-        val createTableQuery = "CREATE TABLE " + DbSettings.DBEntry.TABLE + " ( " +
+        var createTableQuery = "CREATE TABLE " + DbSettings.DBEntry.TABLE + " ( " +
                 DbSettings.DBEntry.ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 DbSettings.DBEntry.COL_TITLE + " TEXT NOT NULL, " +
                 DbSettings.DBEntry.COL_INGREDIENTS + " TEXT NOT NULL, " +
                 DbSettings.DBEntry.COL_HREF + " TEXT NOT NULL, " +
                 DbSettings.DBEntry.COL_IMAGE + " TEXT NOT NULL, " +
-                DbSettings.DBEntry.COL_CATEGORY + " TEXT NOT NULL); " +
-                "CREATE TABLE " + DbSettings.DBEntry.TABLE_SHOPPING + " ( " +
-                DbSettings.DBEntry.COL_NAME + " TEXT NOT NULL, " +
-                DbSettings.DBEntry.COL_RECIPE_ID + " TEXT NOT NULL " +
-                DbSettings.DBEntry.COL_INGREDIENTS + " TEXT NOT NULL); "
+                DbSettings.DBEntry.COL_CATEGORY + " TEXT NOT NULL); "
+        db?.execSQL(createTableQuery)
 
+        createTableQuery = "CREATE TABLE " + DbSettings.DBEntry.TABLE_SHOPPING + " ( " +
+                DbSettings.DBEntry.ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                DbSettings.DBEntry.COL_NAME + " TEXT NOT NULL, " +
+                DbSettings.DBEntry.COL_RECIPE_NAME + " TEXT NOT NULL, " +
+                DbSettings.DBEntry.COL_CHECKED + " INTEGER NOT NULL); "
         db?.execSQL(createTableQuery)
     }
 

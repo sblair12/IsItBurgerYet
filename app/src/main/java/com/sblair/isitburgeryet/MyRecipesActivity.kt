@@ -1,5 +1,6 @@
 package com.sblair.isitburgeryet
 
+import android.app.Activity
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
@@ -8,6 +9,7 @@ import android.graphics.BitmapFactory
 import android.os.AsyncTask
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v7.app.ActionBar
 import android.support.v7.util.DiffUtil
 import android.support.v7.widget.LinearLayoutManager
@@ -51,6 +53,7 @@ class MyRecipesActivity : AppCompatActivity(), AdapterView.OnItemSelectedListene
 
             when (menuItem.itemId) {
                 R.id.nav_home -> startActivity(Intent(this, MainActivity::class.java))
+                R.id.nav_shopping -> startActivity(Intent(this, ShoppingListActivity::class.java))
             }
 
             true
@@ -88,6 +91,14 @@ class MyRecipesActivity : AppCompatActivity(), AdapterView.OnItemSelectedListene
         categories.adapter = categoryAdapter
         categories.onItemSelectedListener = this
         viewModel.getRecipes(categories.selectedItem.toString()).observe(this, observer)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == 1) {
+            if (resultCode == Activity.RESULT_OK) {
+                Snackbar.make(parentView,"Added to My Shopping List", Snackbar.LENGTH_LONG).show()
+            }
+        }
     }
 
     override fun onResume() {
