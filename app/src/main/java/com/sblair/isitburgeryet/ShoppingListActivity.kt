@@ -49,6 +49,7 @@ class ShoppingListActivity : AppCompatActivity() {
 
             when (menuItem.itemId) {
                 R.id.nav_home -> startActivity(Intent(this, MainActivity::class.java))
+                R.id.nav_recipe -> startActivity(Intent(this, MyRecipesActivity::class.java))
             }
 
             true

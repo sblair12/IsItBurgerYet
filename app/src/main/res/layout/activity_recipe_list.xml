@@ -17,6 +17,31 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_alignParentBottom="true"
+            android:layout_centerInParent="true">
+
+            <ImageButton
+                android:id="@+id/btnLeft"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_keyboard_arrow_left_black_24dp"
+                android:visibility="invisible"
+                />
+            <ImageButton
+                android:id="@+id/btnRight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/btnLeft"
+                android:src="@drawable/ic_keyboard_arrow_right_black_24dp"
+                android:visibility="invisible"
+                />
+        </RelativeLayout>
+
+
     </RelativeLayout>
 
 </android.support.design.widget.CoordinatorLayout>
