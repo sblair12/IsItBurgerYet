@@ -37,6 +37,7 @@ class MyRecipeViewActivity : AppCompatActivity() {
         ingredients = ArrayList(recipe.ingredients.split("~"))
 
         recipeTitle.text = recipe.title
+        link.text = recipe.href
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
 

@@ -37,6 +37,7 @@ class RecipeViewActivity : AppCompatActivity(), AdapterView.OnItemSelectedListen
         ingredients = recipe.ingredients
 
         recipeTitle.text = recipe.title
+        link.text = recipe.href
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
 
